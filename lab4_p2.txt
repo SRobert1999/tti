@@ -1,0 +1,93 @@
+import math
+from typing import List
+import heapq
+import numpy as np
+
+def is_integer_num(n):
+    if isinstance(n, int):
+        return True
+    if isinstance(n, float):
+        return n.is_integer()
+    return False
+	
+class Node:
+    def __init__(self, p, s):
+        self.left = None
+        self.middle = None
+        self.right = None
+        self.prob = p
+        self.symbol = s
+
+    def __lt__(self, other):
+        return self.prob < other.prob
+
+    def __repr__(self):
+        return "Node({}, {}, {})". format(repr([self.prob, self.symbol]), repr(self.left), repr(self.middle), repr(self.right))
+
+def HuffmanTree(SP):
+    pq = []
+    for symbol, prob in SP.items():
+        pq.append(Node(prob, symbol))
+    if not is_integer_num((len(pq) - 3) / 2):
+        pq.append(Node(0, ' '))
+    heapq.heapify(pq)
+
+
+
+    while len(pq) > 1:
+        n1 = heapq.heappop(pq)
+        n2 = heapq.heappop(pq)
+        n3 = heapq.heappop(pq)
+        top = Node(n1.prob + n2.prob + n3.prob, n1.symbol + n2.symbol + n3.symbol)
+        top.left = n1
+        top.middle = n2
+        top.right = n3
+        heapq.heappush(pq, top)
+        #print(pq, '\n')
+
+    return pq
+
+def encode(dic_code, root, code):
+    # vom apela recursiv functia pana ajungem la frunze - cele mai mici probabilitati
+    # in dic_code se salveaza codul
+    if root.left is None and root.middle is None and root.right is None:
+        dic_code[root.symbol] = code
+    else:
+        encode(dic_code, root.left, code + '0')
+        encode(dic_code, root.middle, code + '1')
+        encode(dic_code, root.right, code + '2')
+
+def getIdx(S: List[str], key):
+    try:
+        idx = S.index(key)
+    except ValueError:
+        idx = -1
+
+    return idx
+
+def p2(S: List[str], P: List[float]) -> float:
+    SP = dict((S[i], P[i]) for i in range(len(S)))
+    dic_code = dict((S[i], '') for i in range(len(S)))
+    PQ = HuffmanTree(SP)
+    encode(dic_code=dic_code, root=PQ[0], code='')
+
+    probS = {}
+
+    # in probS[key] sunt puse simbolurile si probabilitatile asociate lor
+    for key in dic_code:
+
+        if getIdx(S, key) != -1:
+            probS[key] = P[S.index(key)] # S.index(key) returneaza index-ul la care se afla key
+
+    # Lungimea medie
+    lmed = 0
+    for key in probS:
+        lmed = lmed + probS[key] * len(dic_code[key])
+
+    return lmed
+
+
+S = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7']
+P = [0.25, 0.20, 0.20, 0.10, 0.10, 0.10, 0.05]
+#print(p1(S, P))
+print(p2(S, P))
