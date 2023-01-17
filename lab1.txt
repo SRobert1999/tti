@@ -1,0 +1,48 @@
+lab1-problema 1:
+def numara_caractere(text: str):
+    dictionarul = {}
+    for i in text:
+        if i in dictionarul:
+            dictionarul[i] += 1
+        else:
+            dictionarul[i] = 1
+    return(dictionarul)
+
+
+lab1-problema2:
+def gaseste_maxim_aparitii(lista: list) -> tuple:
+   cnt = 0
+   res = lista[0] 
+   for ele in lista: 
+      curr_freq = lista.count(ele) 
+      if(curr_freq>=cnt): 
+        cnt = curr_freq 
+        res = ele
+
+   return (res,cnt)
+
+
+
+lab1-problema3:
+import numpy as np
+
+def normalizeaza(vector: np.ndarray) -> np.ndarray:
+    norm = (vector - np.average(vector)) / np.std(vector)
+    return norm
+
+
+
+lab1-problema4:
+import numpy as np
+
+def vector_in_matrice(matrice: np.ndarray, vector: np.ndarray) -> bool:
+    for i in matrice:
+        if np.array_equal(i,vector):
+            return True
+            break 
+    return False
+
+
+
+
+
